@@ -43,9 +43,9 @@ class CameraMovementEstimator:
 
     def get_camera_movement(self, frames, read_from_stub=False, stub_path=None):
         # Read from stub
-        #if read_from_stub and stub_path is not None and os.path.exists(stub_path):
-         #   with open(stub_path, 'rb') as f:
-          #      return pickle.load(f)
+        if read_from_stub and stub_path is not None and os.path.exists(stub_path):
+            with open(stub_path, 'rb') as f:
+                return pickle.load(f)
 
         camera_movement = [[0, 0]] * len(frames)
 
@@ -75,9 +75,9 @@ class CameraMovementEstimator:
 
             old_gray = frame_gray.copy()
 
-        #if stub_path is not None:
-         #   with open(stub_path, 'wb') as f:
-          #      pickle.dump(camera_movement, f)
+        if stub_path is not None:
+            with open(stub_path, 'wb') as f:
+                pickle.dump(camera_movement, f)
 
         return camera_movement
 

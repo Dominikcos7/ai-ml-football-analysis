@@ -14,8 +14,8 @@ def main():
     video_frames = read_video('input_videos/psv.mp4')
 
     #Initialize tracker
-    tracker = Tracker('models/best.pt')
-    tracks = tracker.get_object_tracks(video_frames, stub_path='stubs/track_stubs.pkl')
+    tracker = Tracker('models/best_colab_m.pt')
+    tracks = tracker.get_object_tracks(video_frames, stub_path=None)
 
     #Get object positions
     tracker.add_position_to_tracks(tracks)
@@ -25,7 +25,7 @@ def main():
     camera_movement_per_frame = camera_movement_estimator.get_camera_movement(
         video_frames,
         read_from_stub=True,
-        stub_path='stubs/camera_movement_stub.pkl'
+        stub_path=None
     )
     camera_movement_estimator.adjust_positions_to_tracks(tracks, camera_movement_per_frame)
 

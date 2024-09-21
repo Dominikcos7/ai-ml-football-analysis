@@ -8,6 +8,7 @@ import pickle
 import sys
 import supervision as sv
 import pandas as pd
+
 sys.path.append('../')
 
 
@@ -30,7 +31,7 @@ class Tracker:
 
     def interpolate_ball_positions(self, ball_positions):
         ball_positions = [x.get(1, {}).get('bbox', []) for x in ball_positions]
-        df_ball_positions = pd.DataFrame(ball_positions, columns=['x1','y1','x2','y2'])
+        df_ball_positions = pd.DataFrame(ball_positions, columns=['x1', 'y1', 'x2', 'y2'])
 
         #Interpolate missing values
         df_ball_positions = df_ball_positions.interpolate()
@@ -44,7 +45,7 @@ class Tracker:
         batch_size = 20
         detections = []
         for i in range(0, len(frames), batch_size):
-            detections_batch = self.model.predict(frames[i:i+batch_size], conf=0.1)
+            detections_batch = self.model.predict(frames[i:i + batch_size], conf=0.1)
             detections += detections_batch
 
         return detections
@@ -58,14 +59,14 @@ class Tracker:
 
         detections = self.detect_frames(frames)
         tracks = {
-            "players" : [],
-            "referees" : [],
-            "ball" : [],
+            "players": [],
+            "referees": [],
+            "ball": [],
         }
 
         for frame_num, detection in enumerate(detections):
             cls_names = detection.names
-            cls_names_inv = {v:k for k,v in cls_names.items()}
+            cls_names_inv = {v: k for k, v in cls_names.items()}
 
             #Convert to supervision detection format
             detection_supervision = sv.Detections.from_ultralytics(detection)
@@ -102,7 +103,6 @@ class Tracker:
         if stub_path is not None:
             with open(stub_path, "wb") as f:
                 pickle.dump(tracks, f)
-
 
         return tracks
 
@@ -148,7 +148,7 @@ class Tracker:
                 (x1_text, y1_rect + 15),
                 cv2.FONT_HERSHEY_SIMPLEX,
                 0.6,
-                (0,0,0),
+                (0, 0, 0),
                 2
             )
 
@@ -159,9 +159,9 @@ class Tracker:
         x, _ = get_center_of_bbox(bbox)
 
         triangle_points = np.array([
-            [x,y],
-            [x-10,y-20],
-            [x+10,y-20],
+            [x, y],
+            [x - 10, y - 20],
+            [x + 10, y - 20],
         ])
 
         cv2.drawContours(
@@ -175,7 +175,7 @@ class Tracker:
             frame,
             [triangle_points],
             0,
-            (0,0,0),
+            (0, 0, 0),
             2
         )
 
@@ -184,11 +184,11 @@ class Tracker:
     def draw_team_ball_control(self, frame, frame_num, team_ball_control):
         #Draw a semi-transparent rectangle
         overlay = frame.copy()
-        cv2.rectangle(overlay, (800, 550), (1500, 700), (255,255,255), cv2.FILLED)
+        cv2.rectangle(overlay, (800, 550), (1500, 700), (255, 255, 255), cv2.FILLED)
         alpha = 0.4
-        cv2.addWeighted(overlay, alpha, frame, 1-alpha, 0, frame)
+        cv2.addWeighted(overlay, alpha, frame, 1 - alpha, 0, frame)
 
-        team_ball_control_till_frame = team_ball_control[:frame_num+1]
+        team_ball_control_till_frame = team_ball_control[:frame_num + 1]
 
         #Get the number of times each team had the ball
         team_1_num_frames = team_ball_control_till_frame[team_ball_control_till_frame == 1].shape[0]
@@ -196,8 +196,10 @@ class Tracker:
         team_1 = team_1_num_frames / (team_1_num_frames + team_2_num_frames)
         team_2 = team_2_num_frames / (team_1_num_frames + team_2_num_frames)
 
-        cv2.putText(frame, f"Team 1 posession: {team_1 * 100:.2f}%", (800, 600), cv2.FONT_HERSHEY_SIMPLEX, 1, (0,0,0), 3)
-        cv2.putText(frame, f"Team 2 posession: {team_2 * 100:.2f}%", (800, 650), cv2.FONT_HERSHEY_SIMPLEX, 1, (0,0,0), 3)
+        cv2.putText(frame, f"Team 1 posession: {team_1 * 100:.2f}%", (800, 600), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 0),
+                    3)
+        cv2.putText(frame, f"Team 2 posession: {team_2 * 100:.2f}%", (800, 650), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 0),
+                    3)
 
         return frame
 
@@ -214,19 +216,19 @@ class Tracker:
                 frame = self.draw_ellipse(
                     frame,
                     player["bbox"],
-                    player.get('team_color', (0,0,255)),
+                    player.get('team_color', (0, 0, 255)),
                     track_id
                 )
 
                 if player.get('has_ball', False):
-                    frame = self.draw_triangle(frame, player['bbox'], (0,0,255))
+                    frame = self.draw_triangle(frame, player['bbox'], (0, 0, 255))
 
             #Draw referees
             for track_id, referee in referee_dict.items():
                 frame = self.draw_ellipse(
                     frame,
                     referee["bbox"],
-                    (0,255,255),
+                    (0, 255, 255),
                     track_id
                 )
 
@@ -235,7 +237,7 @@ class Tracker:
                 frame = self.draw_triangle(
                     frame,
                     ball["bbox"],
-                    (0,255,0)
+                    (0, 255, 0)
                 )
 
             #Draw team ball control
