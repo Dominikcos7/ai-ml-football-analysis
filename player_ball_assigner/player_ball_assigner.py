@@ -1,11 +1,12 @@
 import sys
-sys.path.append('../')
-
 from utils import get_center_of_bbox, measure_distance
 
-class PlayerBallAssigner():
+sys.path.append('../')
+
+
+class PlayerBallAssigner:
     def __init__(self):
-        self.max_player_ball_distance = 70#px
+        self.max_player_ball_distance = 70  # px
 
     def assign_ball_to_player(self, players, ball_bbox):
         ball_position = get_center_of_bbox(ball_bbox)

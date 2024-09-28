@@ -2,7 +2,6 @@ import cv2
 import numpy as np
 from ultralytics import YOLO
 from utils import get_center_of_bbox, get_bbox_width, get_foot_position
-
 import os
 import pickle
 import sys
@@ -33,7 +32,7 @@ class Tracker:
         ball_positions = [x.get(1, {}).get('bbox', []) for x in ball_positions]
         df_ball_positions = pd.DataFrame(ball_positions, columns=['x1', 'y1', 'x2', 'y2'])
 
-        #Interpolate missing values
+        # Interpolate missing values
         df_ball_positions = df_ball_positions.interpolate()
         df_ball_positions = df_ball_positions.bfill()
 
@@ -68,15 +67,15 @@ class Tracker:
             cls_names = detection.names
             cls_names_inv = {v: k for k, v in cls_names.items()}
 
-            #Convert to supervision detection format
+            # Convert to supervision detection format
             detection_supervision = sv.Detections.from_ultralytics(detection)
 
-            #Convert goalkeeper to player object
+            # Convert goalkeeper to player object
             for object_ind, class_id in enumerate(detection_supervision.class_id):
                 if cls_names[class_id] == "goalkeeper":
                     detection_supervision.class_id[object_ind] = cls_names_inv["player"]
 
-            #Track objects
+            # Track objects
             detections_with_tracks = self.tracker.update_with_detections(detection_supervision)
             tracks["players"].append({})
             tracks["referees"].append({})
@@ -182,7 +181,7 @@ class Tracker:
         return frame
 
     def draw_team_ball_control(self, frame, frame_num, team_ball_control):
-        #Draw a semi-transparent rectangle
+        # Draw a semi-transparent rectangle
         overlay = frame.copy()
         cv2.rectangle(overlay, (800, 550), (1500, 700), (255, 255, 255), cv2.FILLED)
         alpha = 0.4
@@ -190,7 +189,7 @@ class Tracker:
 
         team_ball_control_till_frame = team_ball_control[:frame_num + 1]
 
-        #Get the number of times each team had the ball
+        # Get the number of times each team had the ball
         team_1_num_frames = team_ball_control_till_frame[team_ball_control_till_frame == 1].shape[0]
         team_2_num_frames = team_ball_control_till_frame[team_ball_control_till_frame == 2].shape[0]
         team_1 = team_1_num_frames / (team_1_num_frames + team_2_num_frames)
@@ -211,7 +210,7 @@ class Tracker:
             ball_dict = tracks["ball"][frame_num]
             referee_dict = tracks["referees"][frame_num]
 
-            #Draw players
+            # Draw players
             for track_id, player in player_dict.items():
                 frame = self.draw_ellipse(
                     frame,
@@ -223,7 +222,7 @@ class Tracker:
                 if player.get('has_ball', False):
                     frame = self.draw_triangle(frame, player['bbox'], (0, 0, 255))
 
-            #Draw referees
+            # Draw referees
             for track_id, referee in referee_dict.items():
                 frame = self.draw_ellipse(
                     frame,
@@ -232,7 +231,7 @@ class Tracker:
                     track_id
                 )
 
-            #Draw ball
+            # Draw ball
             for track_id, ball in ball_dict.items():
                 frame = self.draw_triangle(
                     frame,
@@ -240,7 +239,7 @@ class Tracker:
                     (0, 255, 0)
                 )
 
-            #Draw team ball control
+            # Draw team ball control
             frame = self.draw_team_ball_control(frame, frame_num, team_ball_control)
 
             output_video_frames.append(frame)

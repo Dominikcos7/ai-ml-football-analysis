@@ -1,9 +1,9 @@
+from utils import measure_distance, get_foot_position
 import sys
-
 import cv2
 
 sys.path.append("../")
-from utils import measure_distance, get_foot_position
+
 
 class SpeedAndDistanceEstimator:
     def __init__(self):
@@ -19,7 +19,7 @@ class SpeedAndDistanceEstimator:
 
             number_of_frames = len(object_tracks)
             for frame_num in range(0, number_of_frames, self.frame_window):
-                last_frame = min(frame_num + self.frame_window, number_of_frames-1)
+                last_frame = min(frame_num + self.frame_window, number_of_frames - 1)
                 for track_id, _ in object_tracks[frame_num].items():
                     if track_id not in object_tracks[last_frame]:
                         continue
@@ -30,7 +30,7 @@ class SpeedAndDistanceEstimator:
                         continue
 
                     distance_covered = measure_distance(start_position, end_position)
-                    time_elapsed = (last_frame-frame_num) / self.frame_rate
+                    time_elapsed = (last_frame - frame_num) / self.frame_rate
                     speed_meters_per_second = distance_covered / time_elapsed
                     speed_km_per_hour = speed_meters_per_second * 3.6
 
@@ -76,5 +76,3 @@ class SpeedAndDistanceEstimator:
             output_frames.append(frame)
 
         return output_frames
-
-

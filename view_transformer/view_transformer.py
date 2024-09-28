@@ -2,13 +2,13 @@ import cv2
 import numpy as np
 
 
-class ViewTransformer():
+class ViewTransformer:
     def __init__(self):
         court_width = 68
         court_length = 23.32
 
         self.pixel_vertices = np.array([
-            [100, 700], #todo: make the script find the pixel values
+            [100, 700],  # todo: make the script find the pixel values
             [80, 285],
             [1078, 236],
             [1260, 700]
@@ -20,9 +20,6 @@ class ViewTransformer():
             [court_length, 0],
             [court_length, court_width]
         ], np.float32)
-
-        #self.pixel_vertices = self.pixel_vertices.astype(np.float32)
-        #self.pixel_vertices = self.target_vertices.astype(np.float32)
 
         self.perspective_transformer = cv2.getPerspectiveTransform(self.pixel_vertices, self.target_vertices)
 

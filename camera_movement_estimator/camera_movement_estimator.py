@@ -1,12 +1,12 @@
+from utils import measure_distance, measure_xy_distance
 import pickle
-
 import cv2
 import numpy as np
 import sys
 import os
 
 sys.path.append("../")
-from utils import measure_distance, measure_xy_distance
+
 
 class CameraMovementEstimator:
     def __init__(self, frame):
@@ -37,9 +37,8 @@ class CameraMovementEstimator:
                 for track_id, track_info in track.items():
                     position = track_info['position']
                     camera_movement = camera_movement_per_frame[frame_num]
-                    position_adjusted = (position[0]-camera_movement[0], position[1]-camera_movement[1])
+                    position_adjusted = (position[0] - camera_movement[0], position[1] - camera_movement[1])
                     tracks[object][frame_num][track_id]['position_adjusted'] = position_adjusted
-
 
     def get_camera_movement(self, frames, read_from_stub=False, stub_path=None):
         # Read from stub
@@ -92,8 +91,10 @@ class CameraMovementEstimator:
 
             x_movement, y_movement = camera_movement_per_frame[frame_num]
 
-            frame = cv2.putText(frame, f"Camera Movement X: {x_movement:.2f}", (10,30), cv2.FONT_HERSHEY_SIMPLEX, 1, (0,0,0), 3)
-            frame = cv2.putText(frame, f"Camera Movement X: {y_movement:.2f}", (10,60), cv2.FONT_HERSHEY_SIMPLEX, 1, (0,0,0), 3)
+            frame = cv2.putText(frame, f"Camera Movement X: {x_movement:.2f}", (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1,
+                                (0, 0, 0), 3)
+            frame = cv2.putText(frame, f"Camera Movement X: {y_movement:.2f}", (10, 60), cv2.FONT_HERSHEY_SIMPLEX, 1,
+                                (0, 0, 0), 3)
 
             output_frames.append(frame)
 

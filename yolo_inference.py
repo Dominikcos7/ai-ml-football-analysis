@@ -1,9 +1,5 @@
-from ultralytics import YOLO
+import numpy as np
 
-model = YOLO('models/best_colab_m.pt.pt')
-
-results = model.predict('input_videos/psv.mp4', save=True)
-print(results[0])
-for box in results[0].boxes:
-    print(box)
+arr = []
+print (np.array(arr))
     
