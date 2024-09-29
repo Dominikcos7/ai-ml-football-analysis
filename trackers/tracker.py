@@ -183,7 +183,7 @@ class Tracker:
     def draw_team_ball_control(self, frame, frame_num, team_ball_control):
         # Draw a semi-transparent rectangle
         overlay = frame.copy()
-        cv2.rectangle(overlay, (800, 550), (1500, 700), (255, 255, 255), cv2.FILLED)
+        cv2.rectangle(overlay, (frame.shape[1]-700, frame.shape[0]-150), (frame.shape[1], frame.shape[0]), (255, 255, 255), cv2.FILLED)
         alpha = 0.4
         cv2.addWeighted(overlay, alpha, frame, 1 - alpha, 0, frame)
 
@@ -195,9 +195,9 @@ class Tracker:
         team_1 = team_1_num_frames / (team_1_num_frames + team_2_num_frames)
         team_2 = team_2_num_frames / (team_1_num_frames + team_2_num_frames)
 
-        cv2.putText(frame, f"Team 1 posession: {team_1 * 100:.2f}%", (800, 600), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 0),
+        cv2.putText(frame, f"Team 1 posession: {team_1 * 100:.2f}%", (frame.shape[1]-700, frame.shape[0]-100), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 0),
                     3)
-        cv2.putText(frame, f"Team 2 posession: {team_2 * 100:.2f}%", (800, 650), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 0),
+        cv2.putText(frame, f"Team 2 posession: {team_2 * 100:.2f}%", (frame.shape[1]-700, frame.shape[0]-50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 0),
                     3)
 
         return frame
